@@ -1,18 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "std_node.h"
+#include "node.h" // กลับมาใช้ node.h (มีแค่ value และ next)
 
 int main(int argc, const char * argv[]) {
     int c = 5;
     struct node a, b, *head;
 
-    a.id = 5;
-    strcpy(a.name, "Static_A");
+    a.value = c;
     a.next = &b;
     head = &a;
-    b.id = head->id + 3;
-    strcpy(b.name, "Static_B");
+    b.value = head->value + 3;
 
 /* Exercise I
     1. Add 1 more than at the end
@@ -21,8 +18,7 @@ int main(int argc, const char * argv[]) {
  */
     struct node d;
     b.next = &d;
-    d.id = 11;
-    strcpy(d.name, "Static_D");
+    d.value = 11;
     d.next = NULL;
 
 /* Exercise II
@@ -30,14 +26,12 @@ int main(int argc, const char * argv[]) {
         2. Add value (2)
 */
     struct node e;
-    e.id = 2;
-    strcpy(e.name, "Static_E");
+    e.value = 2;
     e.next = head;
     head = &e;
 
     struct node f;
-    f.id = 7;
-    strcpy(f.name, "Static_F");
+    f.value = 7;
     f.next = &b;
     a.next = &f;
 
@@ -52,13 +46,14 @@ int main(int argc, const char * argv[]) {
         }
 */
     int i, n = 5;
-    printf("--- Exercise III Output ---\n");
+    printf("--- Exercise III Output (Static) ---\n");
     for (i = 0; i < n; i++) {
         if (tmp != NULL) {
-            printf("ID: %-8d Name: %-10s\n", tmp->id, tmp->name);
+            printf("%3d -> ", tmp->value);
             tmp = tmp->next;
         }
     }
+    printf("NULL\n");
 
 /* Exercise IV change to while loop!! (you can use NULL to help)
          while(){
@@ -66,28 +61,24 @@ int main(int argc, const char * argv[]) {
            // What is missing???
         }
 */
-    printf("\n--- Exercise IV Output ---\n");
+    printf("\n--- Exercise IV Output (Static) ---\n");
     tmp = head;
     while (tmp != NULL) {
-        printf("ID: %-8d Name: %-10s\n", tmp->id, tmp->name);
+        printf("%3d -> ", tmp->value);
         tmp = tmp->next;
     }
+    printf("NULL\n");
 
 /* Exercise V Use malloc to create all nodes, instead of create a struct!!
          //use a loop to help
 */
     NodePtr m_head = NULL, m_temp = NULL;
-    for (i = 1; i < argc; i += 2) {
+    // รับค่าจาก argv ทีละ 1 ตัวเลขต่อ 1 Node
+    for (i = 1; i < argc; i++) {
         NodePtr newNode = (NodePtr)malloc(sizeof(struct node));
         if (!newNode) break;
 
-        newNode->id = atoi(argv[i]);
-        if (i + 1 < argc) {
-            strncpy(newNode->name, argv[i + 1], 29);
-            newNode->name[29] = '\0';
-        } else {
-            strcpy(newNode->name, "Unknown");
-        }
+        newNode->value = atoi(argv[i]); // เปลี่ยนจาก id เป็น value
         newNode->next = NULL;
 
         if (m_head == NULL) {
@@ -102,7 +93,7 @@ int main(int argc, const char * argv[]) {
     printf("\n--- Exercise V Output (Malloc) ---\n");
     tmp = m_head;
     while (tmp != NULL) {
-        printf("Malloc ID: %-8d Name: %-10s\n", tmp->id, tmp->name);
+        printf("Malloc Value: %d\n", tmp->value);
         tmp = tmp->next;
     }
 
@@ -113,7 +104,7 @@ int main(int argc, const char * argv[]) {
     while (m_head != NULL) {
         tmp = m_head;
         m_head = m_head->next;
-        printf("Freeing ID: %d (%s)...\n", tmp->id, tmp->name);
+        printf("Freeing value: %d\n", tmp->value);
         free(tmp);
     }
 
