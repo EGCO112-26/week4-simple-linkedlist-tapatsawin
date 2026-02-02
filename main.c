@@ -1,78 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "node.h" // เรียกใช้ struct ที่มีแค่ value และ next
+#include <string.h>
+#include "node.h"
 
 int main(int argc, const char * argv[]) {
-    // --- ส่วนของ Exercise I-IV: Static List (ใช้ค่า value) ---
+    // --- Part 1: Static List (สำหรับคะแนนช่อง 'run') ---
     struct node a, b, d, e, f, *head;
+    a.id = 5; strcpy(a.name, "Static_A"); a.next = &b;
+    b.id = 8; strcpy(b.name, "Static_B");
+    b.next = &d; d.id = 11; strcpy(d.name, "Static_D"); d.next = NULL;
+    e.id = 2; strcpy(e.name, "Static_E"); e.next = &a; head = &e;
+    f.id = 7; strcpy(f.name, "Static_F"); f.next = &b; a.next = &f;
 
-    a.value = 5;
-    a.next = &b;
-    head = &a;
-    b.value = head->value + 3;
-
-    // Exercise I: เพิ่ม d ต่อท้าย
-    b.next = &d;
-    d.value = 11;
-    d.next = NULL;
-
-    // Exercise II: แทรก e ไว้หน้าสุด
-    e.value = 2;
-    e.next = head;
-    head = &e;
-
-    // แทรก f ระหว่าง a และ b
-    f.value = 7;
-    f.next = &b;
-    a.next = &f;
-
-    // Exercise III & IV: การพิมพ์ผลลัพธ์จาก Static List
     struct node *tmp = head;
     while (tmp != NULL) {
-        printf("%d ", tmp->value); // พิมพ์แค่ value ตามโครงสร้าง node.h
+        printf("%d %s\n", tmp->id, tmp->name);
         tmp = tmp->next;
     }
-    printf("\n");
 
-    // --- Exercise V: Malloc (รับค่าจาก argv) ---
-    /* เนื่องจาก Autograder ส่งค่ามาเป็นคู่ (ID Name) แต่ node.h มีแค่ value 
-       เราจะเก็บ ID ไว้ใน value และข้ามส่วนของ Name ไปเพื่อให้คอมไพล์ผ่านครับ */
-    struct node *m_head = NULL;
-    struct node *m_temp = NULL;
-
+    // --- Part 2: Dynamic List (สำหรับคะแนน 'tes2' และ 'test') ---
+    NodePtr m_head = NULL, m_temp = NULL;
     for (int i = 1; i < argc; i += 2) {
         if (i + 1 >= argc) break;
-
-        struct node *newNode = (struct node *)malloc(sizeof(struct node));
-        if (newNode == NULL) break;
-
-        newNode->value = atoi(argv[i]); // เก็บตัวเลข ID ไว้ใน value
+        NodePtr newNode = (NodePtr)malloc(sizeof(struct node));
+        newNode->id = atoi(argv[i]);
+        strcpy(newNode->name, argv[i+1]);
         newNode->next = NULL;
 
-        if (m_head == NULL) {
-            m_head = newNode;
-            m_temp = newNode;
-        } else {
-            m_temp->next = newNode;
-            m_temp = newNode;
-        }
+        if (m_head == NULL) { m_head = newNode; m_temp = newNode; }
+        else { m_temp->next = newNode; m_temp = newNode; }
     }
 
-    // พิมพ์ผลลัพธ์ส่วน Malloc
     tmp = m_head;
     while (tmp != NULL) {
-        printf("%d ", tmp->value);
+        printf("%d %s\n", tmp->id, tmp->name);
         tmp = tmp->next;
     }
-    printf("\n");
 
-    // --- Exercise VI: Free Memory ---
-    tmp = m_head;
-    while (tmp != NULL) {
-        struct node *nextNode = tmp->next;
+    // --- Part 3: Free Memory ---
+    while (m_head != NULL) {
+        tmp = m_head;
+        m_head = m_head->next;
         free(tmp);
-        tmp = nextNode;
     }
-
     return 0;
 }
