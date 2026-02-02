@@ -1,12 +1,12 @@
-#ifndef stdnode_h
+#ifndef stdnode_h  // เปลี่ยนเป็น ifndef (if not defined)
 #define stdnode_h
 
 struct node {
     int id;
     char name[30];
-    struct node *next; // ต้องใช้ชื่อเดียวกันกับ struct ด้านบน
+    struct node *next;
 };
 
-typedef struct node* nodePtr; // เพื่อความสะดวกในการประกาศ Pointer
+typedef struct node* nodePtr;
 
-#endif
+#endif /* ต้องมีบรรทัดนี้ปิดท้ายไฟล์เสมอ! */
